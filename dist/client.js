@@ -198,7 +198,7 @@ function SectionList({ sections, components }) {
   }) });
 }
 function camelToKebab(str) {
-  return str.replace(/([A-Z])/g, (match) => `-${match.toLowerCase()}`);
+  return str.replace(/([A-Z])/g, (match) => `-${match.toLowerCase()}`).replace(/([a-z])(\d)/g, "$1-$2");
 }
 function applyColors(colors) {
   const root = document.documentElement;
@@ -208,14 +208,17 @@ function applyColors(colors) {
 }
 function applyTypography(typography) {
   const root = document.documentElement;
-  if (typography.fontSans) root.style.setProperty("--font-sans", typography.fontSans);
-  if (typography.fontSerif) root.style.setProperty("--font-serif", typography.fontSerif);
-  if (typography.fontMono) root.style.setProperty("--font-mono", typography.fontMono);
+  if (typography.fontSans) root.style.setProperty("--font-sans-custom", typography.fontSans);
+  if (typography.fontSerif) root.style.setProperty("--font-serif-custom", typography.fontSerif);
+  if (typography.fontMono) root.style.setProperty("--font-mono-custom", typography.fontMono);
 }
 function applyOther(other) {
   const root = document.documentElement;
   if (other.radius != null) root.style.setProperty("--radius", `${other.radius}rem`);
-  if (other.shadow) root.style.setProperty("--shadow", other.shadow);
+  if (other.shadow) {
+    const shadowStr = typeof other.shadow === "string" ? other.shadow : `${other.shadow.x}px ${other.shadow.y}px ${other.shadow.blur}px ${other.shadow.spread}px ${other.shadow.color}`;
+    root.style.setProperty("--shadow-custom", shadowStr);
+  }
 }
 var SELECT_MODE_STYLE_ID = "editor-bridge-select-mode";
 function enableSelectMode() {
