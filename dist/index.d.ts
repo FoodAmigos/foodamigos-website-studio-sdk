@@ -180,24 +180,6 @@ declare class MostPopularProductsModule {
     list(): Promise<PopularProduct[]>;
 }
 
-type Seo = {
-    title?: string;
-    description?: string;
-    keywords?: string[];
-    ogTitle?: string;
-    ogDescription?: string;
-    ogImage?: string;
-    canonicalUrl?: string;
-    [key: string]: unknown;
-};
-
-declare class SeoModule {
-    private client;
-    private websiteUuid;
-    constructor(client: HttpClient, websiteUuid: string);
-    get(): Promise<Seo>;
-}
-
 type Company = {
     uuid: string;
     name: string;
@@ -265,11 +247,10 @@ type FoodamigosSdk = {
     requests: RequestsModule;
     menu: MenuModule;
     mostPopularProducts: MostPopularProductsModule;
-    seo: SeoModule;
     companies: CompaniesModule;
     gallery: GalleryModule;
     googleReviews: GoogleReviewsModule;
 };
 declare function createFoodamigosSdk(config: FoodamigosSdkConfig): FoodamigosSdk;
 
-export { type ApiError, type CateringRequestData, type CateringRequestResponse, type Company, type EventRequestData, type EventRequestResponse, type FoodamigosSdk, type FoodamigosSdkConfig, type GalleryMedia, type GoogleReview, type Menu, type MenuCategory, type MenuItem, type MenuListItem, type PageConfig, type PageMetadataResult, type PopularProduct, type RequestOptions, type SectionConfig, type Seo, type Website, createFoodamigosSdk };
+export { type ApiError, type CateringRequestData, type CateringRequestResponse, type Company, type EventRequestData, type EventRequestResponse, type FoodamigosSdk, type FoodamigosSdkConfig, type GalleryMedia, type GoogleReview, type Menu, type MenuCategory, type MenuItem, type MenuListItem, type PageConfig, type PageMetadataResult, type PopularProduct, type RequestOptions, type SectionConfig, type Website, createFoodamigosSdk };

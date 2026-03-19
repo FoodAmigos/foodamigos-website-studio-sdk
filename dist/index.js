@@ -148,19 +148,6 @@ var MostPopularProductsModule = class {
   }
 };
 
-// src/modules/seo/seo.ts
-var SeoModule = class {
-  constructor(client, websiteUuid) {
-    this.client = client;
-    this.websiteUuid = websiteUuid;
-  }
-  get() {
-    return this.client.fetch(
-      `/api/websites/${this.websiteUuid}/seo`
-    );
-  }
-};
-
 // src/modules/companies/companies.ts
 var CompaniesModule = class {
   constructor(client, websiteUuid) {
@@ -209,7 +196,6 @@ function createFoodamigosSdk(config) {
     requests: new RequestsModule(client, websiteUuid),
     menu: new MenuModule(client, websiteUuid),
     mostPopularProducts: new MostPopularProductsModule(client, websiteUuid),
-    seo: new SeoModule(client, websiteUuid),
     companies: new CompaniesModule(client, websiteUuid),
     gallery: new GalleryModule(client, websiteUuid),
     googleReviews: new GoogleReviewsModule(client, websiteUuid)
