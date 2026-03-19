@@ -1,6 +1,3 @@
-import * as react_jsx_runtime from 'react/jsx-runtime';
-import { ReactNode, ComponentType } from 'react';
-
 type FoodamigosSdkConfig = {
     websiteUuid: string;
     baseUrl: string;
@@ -197,28 +194,6 @@ type SectionConfig = {
     order: number;
 };
 
-type WebsiteContextValue = {
-    website: Website | null;
-    sdk: FoodamigosSdk;
-    isLoading: boolean;
-    error: Error | null;
-};
-interface WebsiteProviderProps {
-    sdkConfig: FoodamigosSdkConfig;
-    initialWebsite?: Website | null;
-    children: ReactNode;
-}
-declare function WebsiteProvider({ sdkConfig, initialWebsite, children }: WebsiteProviderProps): react_jsx_runtime.JSX.Element;
-declare function useWebsite(): WebsiteContextValue;
-
-interface SectionListProps {
-    sections: SectionConfig[];
-    components: Record<string, ComponentType>;
-}
-declare function SectionList({ sections, components }: SectionListProps): react_jsx_runtime.JSX.Element;
-
-declare function EditorBridge(): null;
-
 type FoodamigosSdk = {
     website: WebsiteModule;
     requests: RequestsModule;
@@ -229,4 +204,4 @@ type FoodamigosSdk = {
 };
 declare function createFoodamigosSdk(config: FoodamigosSdkConfig): FoodamigosSdk;
 
-export { type ApiError, type CateringRequestData, type CateringRequestResponse, type Company, EditorBridge, type EventRequestData, type EventRequestResponse, type FoodamigosSdk, type FoodamigosSdkConfig, type Menu, type MenuCategory, type MenuItem, type MenuListItem, type PageSeo, type PopularProduct, type RequestOptions, type SectionConfig, SectionList, type Seo, type Website, WebsiteProvider, createFoodamigosSdk, useWebsite };
+export { type ApiError, type CateringRequestData, type CateringRequestResponse, type Company, type EventRequestData, type EventRequestResponse, type FoodamigosSdk, type FoodamigosSdkConfig, type Menu, type MenuCategory, type MenuItem, type MenuListItem, type PageSeo, type PopularProduct, type RequestOptions, type SectionConfig, type Seo, type Website, createFoodamigosSdk };

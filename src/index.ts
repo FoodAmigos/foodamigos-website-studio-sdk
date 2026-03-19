@@ -23,8 +23,6 @@ export type { Seo, PageSeo } from "./modules/seo"
 export type { Company } from "./modules/companies"
 export type { SectionConfig } from "./types/sections"
 
-export { WebsiteProvider, useWebsite, SectionList, EditorBridge } from "./components"
-
 export type FoodamigosSdk = {
   website: WebsiteModule
   requests: RequestsModule

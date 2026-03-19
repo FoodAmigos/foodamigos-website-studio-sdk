@@ -1,3 +1,6 @@
+import * as react_jsx_runtime from 'react/jsx-runtime';
+import { ReactNode, ComponentType } from 'react';
+
 type FoodamigosSdkConfig = {
     websiteUuid: string;
     baseUrl: string;
@@ -7,11 +10,6 @@ type RequestOptions = {
     method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
     body?: unknown;
     headers?: Record<string, string>;
-};
-type ApiError = {
-    status: number;
-    message: string;
-    data?: unknown;
 };
 
 declare class HttpClient {
@@ -202,6 +200,27 @@ type FoodamigosSdk = {
     seo: SeoModule;
     companies: CompaniesModule;
 };
-declare function createFoodamigosSdk(config: FoodamigosSdkConfig): FoodamigosSdk;
 
-export { type ApiError, type CateringRequestData, type CateringRequestResponse, type Company, type EventRequestData, type EventRequestResponse, type FoodamigosSdk, type FoodamigosSdkConfig, type Menu, type MenuCategory, type MenuItem, type MenuListItem, type PageSeo, type PopularProduct, type RequestOptions, type SectionConfig, type Seo, type Website, createFoodamigosSdk };
+type WebsiteContextValue = {
+    website: Website | null;
+    sdk: FoodamigosSdk;
+    isLoading: boolean;
+    error: Error | null;
+};
+interface WebsiteProviderProps {
+    sdkConfig: FoodamigosSdkConfig;
+    initialWebsite?: Website | null;
+    children: ReactNode;
+}
+declare function WebsiteProvider({ sdkConfig, initialWebsite, children }: WebsiteProviderProps): react_jsx_runtime.JSX.Element;
+declare function useWebsite(): WebsiteContextValue;
+
+interface SectionListProps {
+    sections: SectionConfig[];
+    components: Record<string, ComponentType>;
+}
+declare function SectionList({ sections, components }: SectionListProps): react_jsx_runtime.JSX.Element;
+
+declare function EditorBridge(): null;
+
+export { EditorBridge, SectionList, WebsiteProvider, useWebsite };

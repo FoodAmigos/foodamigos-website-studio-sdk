@@ -1,6 +1,3 @@
-import { createContext, useState, useEffect, useContext } from 'react';
-import { jsx, Fragment } from 'react/jsx-runtime';
-
 // src/core/client.ts
 var HttpClient = class {
   constructor(config) {
@@ -147,103 +144,6 @@ var CompaniesModule = class {
     );
   }
 };
-var WebsiteContext = createContext(null);
-function WebsiteProvider({ sdkConfig, initialWebsite, children }) {
-  const sdk = createFoodamigosSdk(sdkConfig);
-  const [website, setWebsite] = useState(initialWebsite ?? null);
-  const [isLoading, setIsLoading] = useState(initialWebsite == null);
-  const [error, setError] = useState(null);
-  useEffect(() => {
-    if (initialWebsite != null) return;
-    sdk.website.get().then((data) => {
-      setWebsite(data);
-      setIsLoading(false);
-    }).catch((err) => {
-      setError(err instanceof Error ? err : new Error(String(err)));
-      setIsLoading(false);
-    });
-  }, []);
-  return /* @__PURE__ */ jsx(WebsiteContext.Provider, { value: { website, sdk, isLoading, error }, children });
-}
-function useWebsite() {
-  const ctx = useContext(WebsiteContext);
-  if (!ctx) throw new Error("useWebsite must be used inside WebsiteProvider");
-  return ctx;
-}
-function SectionList({ sections, components }) {
-  const visible = [...sections].filter((s) => s.is_visible).sort((a, b) => a.order - b.order);
-  return /* @__PURE__ */ jsx(Fragment, { children: visible.map((section) => {
-    const Component = components[section.component];
-    if (!Component) return null;
-    return /* @__PURE__ */ jsx("div", { "data-component-id": section.component, children: /* @__PURE__ */ jsx(Component, {}) }, section.component);
-  }) });
-}
-function camelToKebab(str) {
-  return str.replace(/([A-Z])/g, (match) => `-${match.toLowerCase()}`);
-}
-function applyColors(colors) {
-  const root = document.documentElement;
-  Object.entries(colors).forEach(([key, value]) => {
-    root.style.setProperty(`--${camelToKebab(key)}`, value);
-  });
-}
-function applyTypography(typography) {
-  const root = document.documentElement;
-  if (typography.fontSans) root.style.setProperty("--font-sans", typography.fontSans);
-  if (typography.fontSerif) root.style.setProperty("--font-serif", typography.fontSerif);
-  if (typography.fontMono) root.style.setProperty("--font-mono", typography.fontMono);
-}
-function applyOther(other) {
-  const root = document.documentElement;
-  if (other.radius != null) root.style.setProperty("--radius", `${other.radius}rem`);
-  if (other.shadow) root.style.setProperty("--shadow", other.shadow);
-}
-var SELECT_MODE_STYLE_ID = "editor-bridge-select-mode";
-function enableSelectMode() {
-  if (document.getElementById(SELECT_MODE_STYLE_ID)) return;
-  const style = document.createElement("style");
-  style.id = SELECT_MODE_STYLE_ID;
-  style.textContent = "[data-component-id]:hover { outline: 2px solid #3b82f6; outline-offset: 2px; cursor: pointer; }";
-  document.head.appendChild(style);
-}
-function disableSelectMode() {
-  document.getElementById(SELECT_MODE_STYLE_ID)?.remove();
-}
-function EditorBridge() {
-  useEffect(() => {
-    function handleClick(e) {
-      if (!document.getElementById(SELECT_MODE_STYLE_ID)) return;
-      const target = e.target.closest("[data-component-id]");
-      if (!target) return;
-      e.preventDefault();
-      e.stopPropagation();
-      const componentId = target.getAttribute("data-component-id") ?? "";
-      const filePath = target.getAttribute("data-file-path") ?? "";
-      window.parent.postMessage({ type: "ELEMENT_SELECTED", componentId, filePath }, "*");
-    }
-    function handleMessage(e) {
-      const { type, payload } = e.data ?? {};
-      if (type === "ENABLE_SELECT_MODE") {
-        enableSelectMode();
-      } else if (type === "DISABLE_SELECT_MODE") {
-        disableSelectMode();
-      } else if (type === "theme-update") {
-        const theme = payload;
-        if (theme?.colors) applyColors(theme.colors);
-        if (theme?.typography) applyTypography(theme.typography);
-        if (theme?.other) applyOther(theme.other);
-      }
-    }
-    window.addEventListener("message", handleMessage);
-    document.addEventListener("click", handleClick, true);
-    return () => {
-      window.removeEventListener("message", handleMessage);
-      document.removeEventListener("click", handleClick, true);
-      disableSelectMode();
-    };
-  }, []);
-  return null;
-}
 
 // src/index.ts
 function createFoodamigosSdk(config) {
@@ -259,6 +159,6 @@ function createFoodamigosSdk(config) {
   };
 }
 
-export { EditorBridge, SectionList, WebsiteProvider, createFoodamigosSdk, useWebsite };
+export { createFoodamigosSdk };
 //# sourceMappingURL=index.mjs.map
 //# sourceMappingURL=index.mjs.map
