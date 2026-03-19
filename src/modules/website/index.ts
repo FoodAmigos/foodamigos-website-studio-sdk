@@ -1,2 +1,2 @@
 export { WebsiteModule } from "./website"
-export type { Website } from "./types"
+export type { Website, PageConfig, PageMetadataResult } from "./types"

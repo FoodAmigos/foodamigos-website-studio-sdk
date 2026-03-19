@@ -67,4 +67,9 @@ export class HttpClient {
 
     return data as T
   }
+
+  async fetchData<T>(path: string, options: RequestOptions = {}): Promise<T> {
+    const wrapper = await this.fetch<{ data: T }>(path, options)
+    return wrapper.data
+  }
 }

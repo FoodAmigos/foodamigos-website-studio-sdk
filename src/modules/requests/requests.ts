@@ -19,7 +19,7 @@ export class RequestsModule {
     companyId: string,
     data: CateringRequestData
   ): Promise<CateringRequestResponse> {
-    return this.client.fetch<CateringRequestResponse>(
+    return this.client.fetchData<CateringRequestResponse>(
       `/api/websites/${this.websiteUuid}/catering-request/${companyId}`,
       { method: "POST", body: data }
     )
@@ -29,7 +29,7 @@ export class RequestsModule {
     companyId: string,
     data: EventRequestData
   ): Promise<EventRequestResponse> {
-    return this.client.fetch<EventRequestResponse>(
+    return this.client.fetchData<EventRequestResponse>(
       `/api/websites/${this.websiteUuid}/event-request/${companyId}`,
       { method: "POST", body: data }
     )

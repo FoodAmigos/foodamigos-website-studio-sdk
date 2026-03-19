@@ -4,7 +4,7 @@ export type PopularProduct = {
   description?: string
   price: number
   currency: string
-  imageUrl?: string
+  image?: { id: number; url: string; name: string; type: string; extension: string } | null
   rank: number
   [key: string]: unknown
 }

@@ -20,15 +20,11 @@ export type EventRequestData = {
 }
 
 export type CateringRequestResponse = {
-  id: string
-  status: string
-  createdAt: string
+  id: number
   [key: string]: unknown
 }
 
 export type EventRequestResponse = {
-  id: string
-  status: string
-  createdAt: string
+  id: number
   [key: string]: unknown
 }

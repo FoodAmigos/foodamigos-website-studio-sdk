@@ -11,7 +11,7 @@ export class CompaniesModule {
   }
 
   list(): Promise<Company[]> {
-    return this.client.fetch<Company[]>(
+    return this.client.fetchData<Company[]>(
       `/api/websites/${this.websiteUuid}/companies`
     )
   }

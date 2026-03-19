@@ -18,6 +18,7 @@ declare class HttpClient {
     private debug;
     constructor(config: FoodamigosSdkConfig);
     fetch<T>(path: string, options?: RequestOptions): Promise<T>;
+    fetchData<T>(path: string, options?: RequestOptions): Promise<T>;
 }
 
 type Website = {
@@ -28,12 +29,47 @@ type Website = {
     updatedAt: string;
     [key: string]: unknown;
 };
+type PageConfig = {
+    slug: string;
+    path: string;
+    label: string;
+    navLabel: string;
+    isNavItem: boolean;
+    isLegalPage: boolean;
+    seo: {
+        title: string;
+        description: string;
+        robots: string;
+        keywords?: string[];
+    };
+};
+type PageMetadataResult = {
+    title: string;
+    description: string;
+    robots: string;
+    keywords: string[];
+    metadataBase: URL;
+    alternates: {
+        canonical: string;
+    };
+    openGraph: {
+        type: 'website';
+        title: string;
+        description: string;
+        siteName: string;
+    };
+    twitter: {
+        title: string;
+        description: string;
+    };
+};
 
 declare class WebsiteModule {
     private client;
     private websiteUuid;
     constructor(client: HttpClient, websiteUuid: string);
     get(): Promise<Website>;
+    generatePageMetadata(input: PageConfig | undefined): Promise<PageMetadataResult>;
 }
 
 type CateringRequestData = {
@@ -56,15 +92,11 @@ type EventRequestData = {
     [key: string]: unknown;
 };
 type CateringRequestResponse = {
-    id: string;
-    status: string;
-    createdAt: string;
+    id: number;
     [key: string]: unknown;
 };
 type EventRequestResponse = {
-    id: string;
-    status: string;
-    createdAt: string;
+    id: number;
     [key: string]: unknown;
 };
 
@@ -128,7 +160,13 @@ type PopularProduct = {
     description?: string;
     price: number;
     currency: string;
-    imageUrl?: string;
+    image?: {
+        id: number;
+        url: string;
+        name: string;
+        type: string;
+        extension: string;
+    } | null;
     rank: number;
     [key: string]: unknown;
 };
@@ -137,7 +175,7 @@ declare class MostPopularProductsModule {
     private client;
     private websiteUuid;
     constructor(client: HttpClient, websiteUuid: string);
-    list(companyId: string): Promise<PopularProduct[]>;
+    list(): Promise<PopularProduct[]>;
 }
 
 type Seo = {
@@ -150,29 +188,26 @@ type Seo = {
     canonicalUrl?: string;
     [key: string]: unknown;
 };
-type PageSeo = {
-    title?: string;
-    description?: string;
-    ogTitle?: string;
-    ogDescription?: string;
-    ogImage?: string;
-    canonicalUrl?: string;
-    robots?: string;
-    [key: string]: unknown;
-};
 
 declare class SeoModule {
     private client;
     private websiteUuid;
     constructor(client: HttpClient, websiteUuid: string);
     get(): Promise<Seo>;
-    getPageSeo(slug: string): Promise<PageSeo>;
 }
 
 type Company = {
     uuid: string;
     name: string;
     address?: string;
+    phone_number?: string;
+    city?: string;
+    zip_code?: string;
+    email?: string;
+    lat?: number;
+    lon?: number;
+    is_live?: boolean;
+    google_place?: string;
     opening_hours?: unknown;
     locations?: unknown;
     [key: string]: unknown;
@@ -183,6 +218,37 @@ declare class CompaniesModule {
     private websiteUuid;
     constructor(client: HttpClient, websiteUuid: string);
     list(): Promise<Company[]>;
+}
+
+type GalleryMedia = {
+    id: number;
+    url: string;
+    name: string;
+    type: string;
+    extension: string;
+};
+
+declare class GalleryModule {
+    private client;
+    private websiteUuid;
+    constructor(client: HttpClient, websiteUuid: string);
+    list(): Promise<GalleryMedia[]>;
+}
+
+type GoogleReview = {
+    id: number;
+    author_name: string;
+    profile_photo_url: string;
+    rating: number;
+    text: string;
+    time: string;
+};
+
+declare class GoogleReviewsModule {
+    private client;
+    private websiteUuid;
+    constructor(client: HttpClient, websiteUuid: string);
+    list(): Promise<GoogleReview[]>;
 }
 
 type SectionConfig = {
@@ -199,6 +265,8 @@ type FoodamigosSdk = {
     mostPopularProducts: MostPopularProductsModule;
     seo: SeoModule;
     companies: CompaniesModule;
+    gallery: GalleryModule;
+    googleReviews: GoogleReviewsModule;
 };
 
 type WebsiteContextValue = {

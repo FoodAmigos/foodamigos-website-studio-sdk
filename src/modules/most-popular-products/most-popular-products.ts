@@ -10,9 +10,9 @@ export class MostPopularProductsModule {
     this.websiteUuid = websiteUuid
   }
 
-  list(companyId: string): Promise<PopularProduct[]> {
-    return this.client.fetch<PopularProduct[]>(
-      `/api/websites/${this.websiteUuid}/most-popular-products/${companyId}`
+  list(): Promise<PopularProduct[]> {
+    return this.client.fetchData<PopularProduct[]>(
+      `/api/websites/${this.websiteUuid}/most-popular-products`
     )
   }
 }

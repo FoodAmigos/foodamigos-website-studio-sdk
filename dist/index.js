@@ -47,6 +47,10 @@ var HttpClient = class {
     }
     return data;
   }
+  async fetchData(path, options = {}) {
+    const wrapper = await this.fetch(path, options);
+    return wrapper.data;
+  }
 };
 
 // src/modules/website/website.ts
@@ -56,7 +60,35 @@ var WebsiteModule = class {
     this.websiteUuid = websiteUuid;
   }
   get() {
-    return this.client.fetch(`/api/websites/${this.websiteUuid}`);
+    return this.client.fetchData(`/api/websites/${this.websiteUuid}`);
+  }
+  async generatePageMetadata(input) {
+    const website = await this.get().catch(() => null);
+    const siteName = website?.name ?? "";
+    const domain = website?.domain ?? "localhost";
+    const title = input?.seo?.title ?? "";
+    const description = input?.seo?.description ?? "";
+    const robots = input?.seo?.robots ?? "index, follow";
+    const keywords = input?.seo?.keywords ?? [];
+    const canonical = `https://${domain}${input?.path ?? "/"}`;
+    return {
+      title,
+      description,
+      robots,
+      keywords,
+      metadataBase: new URL(`https://${domain}`),
+      alternates: { canonical },
+      openGraph: {
+        type: "website",
+        title,
+        description,
+        siteName
+      },
+      twitter: {
+        title,
+        description
+      }
+    };
   }
 };
 
@@ -67,13 +99,13 @@ var RequestsModule = class {
     this.websiteUuid = websiteUuid;
   }
   createCateringRequest(companyId, data) {
-    return this.client.fetch(
+    return this.client.fetchData(
       `/api/websites/${this.websiteUuid}/catering-request/${companyId}`,
       { method: "POST", body: data }
     );
   }
   createEventRequest(companyId, data) {
-    return this.client.fetch(
+    return this.client.fetchData(
       `/api/websites/${this.websiteUuid}/event-request/${companyId}`,
       { method: "POST", body: data }
     );
@@ -109,9 +141,9 @@ var MostPopularProductsModule = class {
     this.client = client;
     this.websiteUuid = websiteUuid;
   }
-  list(companyId) {
-    return this.client.fetch(
-      `/api/websites/${this.websiteUuid}/most-popular-products/${companyId}`
+  list() {
+    return this.client.fetchData(
+      `/api/websites/${this.websiteUuid}/most-popular-products`
     );
   }
 };
@@ -127,11 +159,6 @@ var SeoModule = class {
       `/api/websites/${this.websiteUuid}/seo`
     );
   }
-  getPageSeo(slug) {
-    return this.client.fetch(
-      `/api/websites/${this.websiteUuid}/pages/${slug}/seo`
-    );
-  }
 };
 
 // src/modules/companies/companies.ts
@@ -141,8 +168,34 @@ var CompaniesModule = class {
     this.websiteUuid = websiteUuid;
   }
   list() {
-    return this.client.fetch(
+    return this.client.fetchData(
       `/api/websites/${this.websiteUuid}/companies`
+    );
+  }
+};
+
+// src/modules/gallery/gallery.ts
+var GalleryModule = class {
+  constructor(client, websiteUuid) {
+    this.client = client;
+    this.websiteUuid = websiteUuid;
+  }
+  list() {
+    return this.client.fetchData(
+      `/api/websites/${this.websiteUuid}/gallery`
+    );
+  }
+};
+
+// src/modules/google-reviews/google-reviews.ts
+var GoogleReviewsModule = class {
+  constructor(client, websiteUuid) {
+    this.client = client;
+    this.websiteUuid = websiteUuid;
+  }
+  list() {
+    return this.client.fetch(
+      `/api/websites/${this.websiteUuid}/google-reviews`
     );
   }
 };
@@ -157,7 +210,9 @@ function createFoodamigosSdk(config) {
     menu: new MenuModule(client, websiteUuid),
     mostPopularProducts: new MostPopularProductsModule(client, websiteUuid),
     seo: new SeoModule(client, websiteUuid),
-    companies: new CompaniesModule(client, websiteUuid)
+    companies: new CompaniesModule(client, websiteUuid),
+    gallery: new GalleryModule(client, websiteUuid),
+    googleReviews: new GoogleReviewsModule(client, websiteUuid)
   };
 }
 

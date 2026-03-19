@@ -1,7 +1,7 @@
 import type { HttpClient } from "../../core/client"
-import type { Seo } from "./types"
+import type { GoogleReview } from "./types"
 
-export class SeoModule {
+export class GoogleReviewsModule {
   private client: HttpClient
   private websiteUuid: string
 
@@ -10,9 +10,9 @@ export class SeoModule {
     this.websiteUuid = websiteUuid
   }
 
-  get(): Promise<Seo> {
-    return this.client.fetch<Seo>(
-      `/api/websites/${this.websiteUuid}/seo`
+  list(): Promise<GoogleReview[]> {
+    return this.client.fetch<GoogleReview[]>(
+      `/api/websites/${this.websiteUuid}/google-reviews`
     )
   }
 }
